@@ -1,461 +1,483 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harmony Plan Blog</title>
-    <style>
-        /* Reset and base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f7f7f7;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            padding: 40px 0;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        /* Loading indicator */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.2rem;
-            color: #7f8c8d;
-        }
-        
-        /* Error message */
-        .error-message {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.2rem;
-            color: #e74c3c;
-            background-color: #fadbd8;
-            border-radius: 5px;
-            display: none;
-        }
-        
-        /* Card grid */
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-        
-        .post-card {
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        
-        .post-image {
-            height: 180px;
-            background-color: #3498db;
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-        }
-        
-        .post-content {
-            padding: 20px;
-        }
-        
-        .post-date {
-            font-size: 0.9rem;
-            color: #95a5a6;
-            margin-bottom: 8px;
-        }
-        
-        .post-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        .post-excerpt {
-            color: #7f8c8d;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        .post-link {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-        
-        .post-link:hover {
-            background-color: #2980b9;
-        }
-        
-        /* Repository info */
-        .repo-info {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            background-color: #ecf0f1;
-            border-radius: 8px;
-        }
-        
-        .repo-info h3 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        .repo-info p {
-            color: #7f8c8d;
-            margin-bottom: 10px;
-        }
-        
-        .repo-link {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .repo-link:hover {
-            text-decoration: underline;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .posts-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 20px;
-            }
-            
-            header {
-                padding: 30px 0;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .posts-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            header {
-                padding: 20px 0;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harmony Plan Blog</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f7f7f7;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      padding: 40px 0;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      color: #7f8c8d;
+      margin-bottom: 30px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Loading indicator */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+      color: #7f8c8d;
+    }
+    
+    /* Error message */
+    .error-message {
+      text-align: center;
+      padding: 40px;
+      font-size: 1.2rem;
+      color: #e74c3c;
+      background-color: #fadbd8;
+      border-radius: 5px;
+      display: none;
+    }
+    
+    /* Card grid */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 20px;
+    }
+    
+    .post-card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .post-image {
+      height: 180px;
+      background-color: #3498db;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    }
+    
+    .post-content {
+      padding: 20px;
+    }
+    
+    .post-date {
+      font-size: 0.9rem;
+      color: #95a5a6;
+      margin-bottom: 8px;
+    }
+    
+    .post-title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    
+    .post-excerpt {
+      color: #7f8c8d;
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .post-link {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+    
+    .post-link:hover {
+      background-color: #2980b9;
+    }
+    
+    /* Repository info */
+    .repo-info {
+      text-align: center;
+      margin-top: 50px;
+      padding: 20px;
+      background-color: #ecf0f1;
+      border-radius: 8px;
+    }
+    
+    .repo-info h3 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    
+    .repo-info p {
+      color: #7f8c8d;
+      margin-bottom: 10px;
+    }
+    
+    .repo-link {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .repo-link:hover {
+      text-decoration: underline;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .posts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      
+      header {
+        padding: 30px 0;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .posts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      header {
+        padding: 20px 0;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Harmony Plan Blog</h1>
-            <p class="subtitle">Insights and updates from Harmony Plan</p>
-        </header>
-        
-        <div id="loading" class="loading">Loading posts...</div>
-        <div id="error" class="error-message">Failed to load posts. Please try again later.</div>
-        <div id="posts-grid" class="posts-grid"></div>
-        
-        <div id="repo-info" class="repo-info" style="display: none;">
-            <h3>Repository Information</h3>
-            <p id="repo-description">Loading repository information...</p>
-            <a id="repo-link" href="#" class="repo-link" target="_blank">View on GitHub</a>
-        </div>
-    </div>
+  <div class="container">
+    <header>
+      <h1>Harmony Plan Blog</h1>
+      <p class="subtitle">Insights and updates from Harmony Plan</p>
+    </header>
     
-    <script>
-        // Configuration - GitHub repository details
-        const config = {
-            username: 'harmonyca25',
-            repo: 'harmonyplan-blog',
-            postsDirectory: 'posts/2025/'
-        };
+    <div id="loading" class="loading">Loading posts...</div>
+    <div id="error" class="error-message">Failed to load posts. Please try again later.</div>
+    <div id="posts-grid" class="posts-grid"></div>
+    
+    <div id="repo-info" class="repo-info" style="display: none;">
+      <h3>Repository Information</h3>
+      <p id="repo-description">Loading repository information...</p>
+      <a id="repo-link" href="#" class="repo-link" target="_blank">View on GitHub</a>
+    </div>
+  </div>
+  
+  <script>
+    // Configuration - GitHub repository details
+    const config = {
+      username: 'harmonyca25',
+      repo: 'harmonyplan-blog',
+      postsDirectory: 'posts/2025/'
+    };
+    
+    // DOM elements
+    const postsGrid = document.getElementById('posts-grid');
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const repoInfoEl = document.getElementById('repo-info');
+    const repoDescriptionEl = document.getElementById('repo-description');
+    const repoLinkEl = document.getElementById('repo-link');
+    
+    // GitHub API base URL
+    const apiBaseUrl = 'https://api.github.com';
+    
+    // Function to fetch repository contents and then traverse subdirectories
+    async function fetchRepositoryContents() {
+      try {
+        // Fetch repository information
+        const repoResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}`);
+        const repoData = await repoResponse.json();
         
-        // DOM elements
-        const postsGrid = document.getElementById('posts-grid');
-        const loadingEl = document.getElementById('loading');
-        const errorEl = document.getElementById('error');
-        const repoInfoEl = document.getElementById('repo-info');
-        const repoDescriptionEl = document.getElementById('repo-description');
-        const repoLinkEl = document.getElementById('repo-link');
+        if (repoResponse.status !== 200) {
+          throw new Error('Failed to fetch repository information');
+        }
         
-        // GitHub API base URL
-        const apiBaseUrl = 'https://api.github.com';
+        // Update repository information
+        repoDescriptionEl.textContent = repoData.description || 'No description available';
+        repoLinkEl.href = repoData.html_url;
+        repoInfoEl.style.display = 'block';
         
-        // Function to fetch repository contents
-        async function fetchRepositoryContents() {
-            try {
-                // Fetch repository information
-                const repoResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}`);
-                const repoData = await repoResponse.json();
-                
-                if (repoResponse.status !== 200) {
-                    throw new Error('Failed to fetch repository information');
-                }
-                
-                // Update repository information
-                repoDescriptionEl.textContent = repoData.description || 'No description available';
-                repoLinkEl.href = repoData.html_url;
-                repoInfoEl.style.display = 'block';
-                
-                // Fetch repository contents
-                const contentsPath = config.postsDirectory ? config.postsDirectory : '';
-                const contentsResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}/contents/${contentsPath}`);
-                const contentsData = await contentsResponse.json();
-                
-                if (contentsResponse.status !== 200) {
-                    throw new Error('Failed to fetch repository contents');
-                }
-                
-                // Filter for markdown files (potential blog posts)
-                const markdownFiles = contentsData.filter(item => 
-                    item.type === 'file' && 
-                    (item.name.endsWith('.md') || item.name.endsWith('.markdown'))
-                );
-                
-                if (markdownFiles.length === 0) {
-                    loadingEl.textContent = 'No blog posts found in this repository.';
-                    return;
-                }
-                
-                // Process each markdown file to extract metadata and content
-                const postPromises = markdownFiles.map(async file => {
-                    try {
-                        const contentResponse = await fetch(file.download_url);
-                        const content = await contentResponse.text();
-                        
-                        // Extract metadata from the markdown content
-                        // This assumes a simple front matter format like:
-                        // ---
-                        // title: Post Title
-                        // date: 2023-01-01
-                        // excerpt: A short description
-                        // image: https://example.com/image.jpg (optional)
-                        // ---
-                        
-                        const metadata = extractFrontMatter(content);
-                        const postContent = content.replace(/---[\s\S]*?---/, '').trim();
-                        
-                        return {
-                            title: metadata.title || file.name.replace(/\.(md|markdown)$/, ''),
-                            date: metadata.date || 'Unknown date',
-                            excerpt: metadata.excerpt || extractExcerpt(postContent),
-                            image: metadata.image || generateImagePlaceholder(file.name),
-                            content: postContent,
-                            url: file.html_url,
-                            download_url: file.download_url,
-                            filename: file.name
-                        };
-                    } catch (error) {
-                        console.error(`Error processing file ${file.name}:`, error);
-                        return null;
-                    }
-                });
-                
-                const posts = (await Promise.all(postPromises)).filter(post => post !== null);
-                
-                // Sort posts by date (newest first)
-                posts.sort((a, b) => {
-                    const dateA = new Date(a.date);
-                    const dateB = new Date(b.date);
-                    return isNaN(dateA) || isNaN(dateB) ? 0 : dateB - dateA;
-                });
-                
-                // Render posts
-                renderPosts(posts);
-                
-                // Hide loading indicator
-                loadingEl.style.display = 'none';
-                
-            } catch (error) {
-                console.error('Error fetching repository contents:', error);
-                loadingEl.style.display = 'none';
-                errorEl.style.display = 'block';
-                errorEl.textContent = `Error: ${error.message}`;
+        // Fetch the contents of the posts directory (e.g., posts/2025/)
+        const contentsResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}/contents/${config.postsDirectory}`);
+        const contentsData = await contentsResponse.json();
+        
+        if (contentsResponse.status !== 200) {
+          throw new Error('Failed to fetch repository contents');
+        }
+        
+        // Array to hold files (posts)
+        let postFiles = [];
+        
+        // Process each item – if it's a file (markdown), add it; if directory, fetch its contents and look for index.html
+        for (const item of contentsData) {
+          if (item.type === 'file' && (item.name.endsWith('.md') || item.name.endsWith('.markdown'))) {
+            postFiles.push(item);
+          } else if (item.type === 'dir') {
+            // Fetch contents of the subdirectory
+            const dirResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}/contents/${item.path}`);
+            const dirContents = await dirResponse.json();
+            // Look for an index.html file in the directory
+            const indexFile = dirContents.find(file => file.type === 'file' && file.name.toLowerCase() === 'index.html');
+            if (indexFile) {
+              postFiles.push(indexFile);
             }
+          }
         }
         
-        // Function to extract post information from actual HTML file via fetch
-        async function tryFetchPostContent(url) {
-            try {
-                const response = await fetch(url);
-                if (response.status === 200) {
-                    const html = await response.text();
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    
-                    // Extract title
-                    const title = doc.querySelector('title')?.textContent || 
-                                  doc.querySelector('h1')?.textContent || 
-                                  'Blog Post';
-                    
-                    // Extract excerpt
-                    const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content');
-                    const firstPara = doc.querySelector('p')?.textContent;
-                    const excerpt = metaDesc || firstPara || 'Read this blog post for more information.';
-                    
-                    return {
-                        title,
-                        excerpt: excerpt.substring(0, 150) + '...'
-                    };
-                }
-                return null;
-            } catch (error) {
-                console.error("Error fetching post content:", error);
-                return null;
-            }
+        if (postFiles.length === 0) {
+          loadingEl.textContent = 'No blog posts found in this repository.';
+          return;
         }
         
-        // Function to generate a placeholder image based on filename
-        function generateImagePlaceholder(filename) {
-            // Generate a consistent color based on the filename
-            let hash = 0;
-            for (let i = 0; i < filename.length; i++) {
-                hash = ((hash << 5) - hash) + filename.charCodeAt(i);
-                hash |= 0; // Convert to 32bit integer
-            }
-            
-            const hue = Math.abs(hash % 360);
-            const saturation = 70;
-            const lightness = 60;
-            
-            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-        }
-        
-        // Function to render posts to the grid
-        function renderPosts(posts) {
-            postsGrid.innerHTML = '';
-            
-            posts.forEach(post => {
-                const postCard = document.createElement('div');
-                postCard.className = 'post-card';
-                
-                // Create post image or placeholder
-                const postImage = document.createElement('div');
-                postImage.className = 'post-image';
-                if (post.image.startsWith('http')) {
-                    postImage.style.backgroundImage = `url(${post.image})`;
-                } else {
-                    postImage.style.backgroundColor = post.image;
-                    
-                    // Add first letter of title as text in the placeholder
-                    if (post.title) {
-                        const firstLetter = post.title.charAt(0).toUpperCase();
-                        postImage.textContent = firstLetter;
-                    }
-                }
-                
-                // Create post content container
-                const postContent = document.createElement('div');
-                postContent.className = 'post-content';
-                
-                // Create post date
-                const postDate = document.createElement('div');
-                postDate.className = 'post-date';
-                postDate.textContent = formatDate(post.date);
-                
-                // Create post title
-                const postTitle = document.createElement('h2');
-                postTitle.className = 'post-title';
-                postTitle.textContent = post.title;
-                
-                // Create post excerpt
-                const postExcerpt = document.createElement('div');
-                postExcerpt.className = 'post-excerpt';
-                postExcerpt.textContent = post.excerpt;
-                
-                // Create post link
-                const postLink = document.createElement('a');
-                postLink.className = 'post-link';
-                postLink.href = post.url;
-                postLink.target = '_blank';
-                postLink.textContent = 'Read Post';
-                
-                // Assemble the card
-                postContent.appendChild(postDate);
-                postContent.appendChild(postTitle);
-                postContent.appendChild(postExcerpt);
-                postContent.appendChild(postLink);
-                
-                postCard.appendChild(postImage);
-                postCard.appendChild(postContent);
-                
-                postsGrid.appendChild(postCard);
-            });
-        }
-        
-        // Function to format dates
-        function formatDate(dateString) {
-            try {
-                const date = new Date(dateString);
-                if (isNaN(date)) return dateString;
-                
-                return new Intl.DateTimeFormat('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                }).format(date);
-            } catch (error) {
-                return dateString;
-            }
-        }
-        
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("Blog page initialized, fetching posts...");
-            fetchRepositoryContents();
+        // Process each post file to extract metadata and content
+        const postPromises = postFiles.map(async file => {
+          if (file.name.endsWith('.html')) {
+            // For HTML posts, try to fetch and parse the HTML file
+            const metadata = await tryFetchPostContent(file.download_url);
+            return {
+              title: metadata?.title || file.name,
+              date: metadata?.date || 'Unknown date',
+              excerpt: metadata?.excerpt || 'Read this post for more details.',
+              image: generateImagePlaceholder(file.name),
+              url: file.html_url,
+              download_url: file.download_url,
+              filename: file.name
+            };
+          } else {
+            // For markdown files, extract front matter (if available)
+            const contentResponse = await fetch(file.download_url);
+            const content = await contentResponse.text();
+            const metadata = extractFrontMatter(content);
+            const postContent = content.replace(/---[\s\S]*?---/, '').trim();
+            return {
+              title: metadata.title || file.name.replace(/\.(md|markdown)$/, ''),
+              date: metadata.date || 'Unknown date',
+              excerpt: metadata.excerpt || extractExcerpt(postContent),
+              image: metadata.image || generateImagePlaceholder(file.name),
+              url: file.html_url,
+              download_url: file.download_url,
+              filename: file.name
+            };
+          }
         });
-    </script>
+        
+        let posts = (await Promise.all(postPromises)).filter(post => post !== null);
+        
+        // Sort posts by date (newest first) if possible
+        posts.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return isNaN(dateA) || isNaN(dateB) ? 0 : dateB - dateA;
+        });
+        
+        // Render posts to the grid
+        renderPosts(posts);
+        loadingEl.style.display = 'none';
+        
+      } catch (error) {
+        console.error('Error fetching repository contents:', error);
+        loadingEl.style.display = 'none';
+        errorEl.style.display = 'block';
+        errorEl.textContent = `Error: ${error.message}`;
+      }
+    }
+    
+    // Helper: Extract front matter from markdown content
+    function extractFrontMatter(content) {
+      const match = content.match(/^---\s*([\s\S]*?)\s*---/);
+      if (match) {
+        const lines = match[1].split("\n");
+        const metadata = {};
+        lines.forEach(line => {
+          const parts = line.split(":");
+          if (parts.length >= 2) {
+            const key = parts[0].trim();
+            const value = parts.slice(1).join(":").trim();
+            metadata[key] = value;
+          }
+        });
+        return metadata;
+      }
+      return {};
+    }
+    
+    // Helper: Extract an excerpt from content (first 150 characters)
+    function extractExcerpt(content) {
+      return content.substring(0, 150);
+    }
+    
+    // Function to try fetching HTML post content and extract metadata
+    async function tryFetchPostContent(url) {
+      try {
+        const response = await fetch(url);
+        if (response.status === 200) {
+          const html = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          // Extract title
+          const title = doc.querySelector('title')?.textContent ||
+                        doc.querySelector('h1')?.textContent ||
+                        'Blog Post';
+          
+          // For date, you might include a meta tag or other indicator; here we default.
+          const date = doc.querySelector('meta[name="date"]')?.getAttribute('content') || 'Unknown date';
+          
+          // Extract excerpt: try meta description first, then first paragraph.
+          const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+          const firstPara = doc.querySelector('p')?.textContent;
+          const excerpt = metaDesc || firstPara || 'Read this blog post for more information.';
+          
+          return {
+            title,
+            date,
+            excerpt: excerpt.substring(0, 150) + '...'
+          };
+        }
+        return null;
+      } catch (error) {
+        console.error("Error fetching post content:", error);
+        return null;
+      }
+    }
+    
+    // Function to generate a placeholder image color based on filename
+    function generateImagePlaceholder(filename) {
+      let hash = 0;
+      for (let i = 0; i < filename.length; i++) {
+        hash = ((hash << 5) - hash) + filename.charCodeAt(i);
+        hash |= 0;
+      }
+      const hue = Math.abs(hash % 360);
+      const saturation = 70;
+      const lightness = 60;
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+    
+    // Function to render posts to the grid
+    function renderPosts(posts) {
+      postsGrid.innerHTML = '';
+      
+      posts.forEach(post => {
+        const postCard = document.createElement('div');
+        postCard.className = 'post-card';
+        
+        const postImage = document.createElement('div');
+        postImage.className = 'post-image';
+        if (post.image.startsWith('http')) {
+          postImage.style.backgroundImage = `url(${post.image})`;
+        } else {
+          postImage.style.backgroundColor = post.image;
+          if (post.title) {
+            postImage.textContent = post.title.charAt(0).toUpperCase();
+          }
+        }
+        
+        const postContent = document.createElement('div');
+        postContent.className = 'post-content';
+        
+        const postDate = document.createElement('div');
+        postDate.className = 'post-date';
+        postDate.textContent = formatDate(post.date);
+        
+        const postTitle = document.createElement('h2');
+        postTitle.className = 'post-title';
+        postTitle.textContent = post.title;
+        
+        const postExcerpt = document.createElement('div');
+        postExcerpt.className = 'post-excerpt';
+        postExcerpt.textContent = post.excerpt;
+        
+        const postLink = document.createElement('a');
+        postLink.className = 'post-link';
+        postLink.href = post.url;
+        postLink.target = '_blank';
+        postLink.textContent = 'Read Post';
+        
+        postContent.appendChild(postDate);
+        postContent.appendChild(postTitle);
+        postContent.appendChild(postExcerpt);
+        postContent.appendChild(postLink);
+        
+        postCard.appendChild(postImage);
+        postCard.appendChild(postContent);
+        
+        postsGrid.appendChild(postCard);
+      });
+    }
+    
+    // Function to format dates nicely
+    function formatDate(dateString) {
+      try {
+        const date = new Date(dateString);
+        if (isNaN(date)) return dateString;
+        return new Intl.DateTimeFormat('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }).format(date);
+      } catch (error) {
+        return dateString;
+      }
+    }
+    
+    // Initialize the application when the DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log("Blog page initialized, fetching posts...");
+      fetchRepositoryContents();
+    });
+  </script>
 </body>
 </html>
