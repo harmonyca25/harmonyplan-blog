@@ -87,6 +87,13 @@
             background-color: #3498db;
             background-size: cover;
             background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
         }
         
         .post-content {
@@ -319,91 +326,45 @@
             }
         }
         
-        // Function to extract post information from HTML content
-        function extractPostInfoFromHTML(content, file) {
-            // Create a temporary DOM element to parse the HTML
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(content, 'text/html');
-            
-            // Default post information
-            const postInfo = {
-                title: file.name.replace('.html', ''),
-                date: new Date().toISOString().split('T')[0], // Default to today
-                excerpt: 'No excerpt available',
-                image: generateImagePlaceholder(file.name),
-                url: file.html_url,
-                download_url: file.download_url,
-                filename: file.name
-            };
-            
+        // Function to extract post information from actual HTML file via fetch
+        async function tryFetchPostContent(url) {
             try {
-                // Try to extract title from <title> or first <h1>
-                const titleElement = doc.querySelector('title') || doc.querySelector('h1');
-                if (titleElement && titleElement.textContent.trim()) {
-                    postInfo.title = titleElement.textContent.trim();
+                const response = await fetch(url);
+                if (response.status === 200) {
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Extract title
+                    const title = doc.querySelector('title')?.textContent || 
+                                  doc.querySelector('h1')?.textContent || 
+                                  'Blog Post';
+                    
+                    // Extract excerpt
+                    const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content');
+                    const firstPara = doc.querySelector('p')?.textContent;
+                    const excerpt = metaDesc || firstPara || 'Read this blog post for more information.';
+                    
+                    return {
+                        title,
+                        excerpt: excerpt.substring(0, 150) + '...'
+                    };
                 }
-                
-                // Try to extract date from meta tags or specific elements
-                const dateElement = doc.querySelector('meta[name="date"], meta[property="article:published_time"], .date, .post-date');
-                if (dateElement) {
-                    if (dateElement.getAttribute('content')) {
-                        postInfo.date = dateElement.getAttribute('content');
-                    } else if (dateElement.textContent) {
-                        postInfo.date = dateElement.textContent.trim();
-                    }
-                }
-                
-                // Try to extract excerpt from meta description or first paragraph
-                const metaDesc = doc.querySelector('meta[name="description"]');
-                const firstPara = doc.querySelector('p');
-                
-                if (metaDesc && metaDesc.getAttribute('content')) {
-                    postInfo.excerpt = metaDesc.getAttribute('content');
-                } else if (firstPara && firstPara.textContent) {
-                    postInfo.excerpt = firstPara.textContent.trim().substring(0, 150) + '...';
-                }
-                
-                // Try to extract image from meta image or first image in content
-                const metaImage = doc.querySelector('meta[property="og:image"]');
-                const firstImage = doc.querySelector('img');
-                
-                if (metaImage && metaImage.getAttribute('content')) {
-                    postInfo.image = metaImage.getAttribute('content');
-                } else if (firstImage && firstImage.getAttribute('src')) {
-                    const imgSrc = firstImage.getAttribute('src');
-                    // Handle relative URLs
-                    if (imgSrc.startsWith('http')) {
-                        postInfo.image = imgSrc;
-                    } else {
-                        // We'll keep the placeholder for relative URLs to avoid CORS issues
-                    }
-                }
+                return null;
             } catch (error) {
-                console.error('Error extracting post info:', error);
+                console.error("Error fetching post content:", error);
+                return null;
             }
-            
-            return postInfo;
-        }
-        
-        // Function to extract an excerpt from HTML content (fallback)
-        function extractExcerptFromHTML(content) {
-            // Strip HTML tags for a plain text excerpt
-            const plainText = content
-                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-                .replace(/<[^>]*>/g, ' ')
-                .replace(/\s+/g, ' ');
-                
-            // Get first 150 characters as excerpt
-            return plainText.trim().substring(0, 150) + '...';
         }
         
         // Function to generate a placeholder image based on filename
         function generateImagePlaceholder(filename) {
             // Generate a consistent color based on the filename
-            const hash = Array.from(filename).reduce((hash, char) => {
-                return ((hash << 5) - hash) + char.charCodeAt(0);
-            }, 0);
+            let hash = 0;
+            for (let i = 0; i < filename.length; i++) {
+                hash = ((hash << 5) - hash) + filename.charCodeAt(i);
+                hash |= 0; // Convert to 32bit integer
+            }
             
             const hue = Math.abs(hash % 360);
             const saturation = 70;
@@ -427,6 +388,12 @@
                     postImage.style.backgroundImage = `url(${post.image})`;
                 } else {
                     postImage.style.backgroundColor = post.image;
+                    
+                    // Add first letter of title as text in the placeholder
+                    if (post.title) {
+                        const firstLetter = post.title.charAt(0).toUpperCase();
+                        postImage.textContent = firstLetter;
+                    }
                 }
                 
                 // Create post content container
@@ -485,7 +452,10 @@
         }
         
         // Initialize the application
-        document.addEventListener('DOMContentLoaded', fetchRepositoryContents);
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Blog page initialized, fetching posts...");
+            fetchRepositoryContents();
+        });
     </script>
 </body>
 </html>
