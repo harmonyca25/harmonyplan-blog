@@ -1,1 +1,491 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony Plan Blog</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Loading indicator */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        /* Error message */
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #e74c3c;
+            background-color: #fadbd8;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        /* Card grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .post-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .post-image {
+            height: 180px;
+            background-color: #3498db;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .post-content {
+            padding: 20px;
+        }
+        
+        .post-date {
+            font-size: 0.9rem;
+            color: #95a5a6;
+            margin-bottom: 8px;
+        }
+        
+        .post-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .post-excerpt {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .post-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .post-link:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Repository info */
+        .repo-info {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+        }
+        
+        .repo-info h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .repo-info p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .repo-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .repo-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            
+            header {
+                padding: 30px 0;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                padding: 20px 0;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Harmony Plan Blog</h1>
+            <p class="subtitle">Insights and updates from Harmony Plan</p>
+        </header>
+        
+        <div id="loading" class="loading">Loading posts...</div>
+        <div id="error" class="error-message">Failed to load posts. Please try again later.</div>
+        <div id="posts-grid" class="posts-grid"></div>
+        
+        <div id="repo-info" class="repo-info" style="display: none;">
+            <h3>Repository Information</h3>
+            <p id="repo-description">Loading repository information...</p>
+            <a id="repo-link" href="#" class="repo-link" target="_blank">View on GitHub</a>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration - GitHub repository details
+        const config = {
+            username: 'harmonyca25',
+            repo: 'harmonyplan-blog',
+            postsDirectory: 'posts/2025/'
+        };
+        
+        // DOM elements
+        const postsGrid = document.getElementById('posts-grid');
+        const loadingEl = document.getElementById('loading');
+        const errorEl = document.getElementById('error');
+        const repoInfoEl = document.getElementById('repo-info');
+        const repoDescriptionEl = document.getElementById('repo-description');
+        const repoLinkEl = document.getElementById('repo-link');
+        
+        // GitHub API base URL
+        const apiBaseUrl = 'https://api.github.com';
+        
+        // Function to fetch repository contents
+        async function fetchRepositoryContents() {
+            try {
+                // Fetch repository information
+                const repoResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}`);
+                const repoData = await repoResponse.json();
+                
+                if (repoResponse.status !== 200) {
+                    throw new Error('Failed to fetch repository information');
+                }
+                
+                // Update repository information
+                repoDescriptionEl.textContent = repoData.description || 'No description available';
+                repoLinkEl.href = repoData.html_url;
+                repoInfoEl.style.display = 'block';
+                
+                // Fetch repository contents
+                const contentsPath = config.postsDirectory ? config.postsDirectory : '';
+                const contentsResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}/contents/${contentsPath}`);
+                const contentsData = await contentsResponse.json();
+                
+                if (contentsResponse.status !== 200) {
+                    throw new Error('Failed to fetch repository contents');
+                }
+                
+                // Filter for markdown files (potential blog posts)
+                const markdownFiles = contentsData.filter(item => 
+                    item.type === 'file' && 
+                    (item.name.endsWith('.md') || item.name.endsWith('.markdown'))
+                );
+                
+                if (markdownFiles.length === 0) {
+                    loadingEl.textContent = 'No blog posts found in this repository.';
+                    return;
+                }
+                
+                // Process each markdown file to extract metadata and content
+                const postPromises = markdownFiles.map(async file => {
+                    try {
+                        const contentResponse = await fetch(file.download_url);
+                        const content = await contentResponse.text();
+                        
+                        // Extract metadata from the markdown content
+                        // This assumes a simple front matter format like:
+                        // ---
+                        // title: Post Title
+                        // date: 2023-01-01
+                        // excerpt: A short description
+                        // image: https://example.com/image.jpg (optional)
+                        // ---
+                        
+                        const metadata = extractFrontMatter(content);
+                        const postContent = content.replace(/---[\s\S]*?---/, '').trim();
+                        
+                        return {
+                            title: metadata.title || file.name.replace(/\.(md|markdown)$/, ''),
+                            date: metadata.date || 'Unknown date',
+                            excerpt: metadata.excerpt || extractExcerpt(postContent),
+                            image: metadata.image || generateImagePlaceholder(file.name),
+                            content: postContent,
+                            url: file.html_url,
+                            download_url: file.download_url,
+                            filename: file.name
+                        };
+                    } catch (error) {
+                        console.error(`Error processing file ${file.name}:`, error);
+                        return null;
+                    }
+                });
+                
+                const posts = (await Promise.all(postPromises)).filter(post => post !== null);
+                
+                // Sort posts by date (newest first)
+                posts.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return isNaN(dateA) || isNaN(dateB) ? 0 : dateB - dateA;
+                });
+                
+                // Render posts
+                renderPosts(posts);
+                
+                // Hide loading indicator
+                loadingEl.style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error fetching repository contents:', error);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                errorEl.textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        // Function to extract post information from HTML content
+        function extractPostInfoFromHTML(content, file) {
+            // Create a temporary DOM element to parse the HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            
+            // Default post information
+            const postInfo = {
+                title: file.name.replace('.html', ''),
+                date: new Date().toISOString().split('T')[0], // Default to today
+                excerpt: 'No excerpt available',
+                image: generateImagePlaceholder(file.name),
+                url: file.html_url,
+                download_url: file.download_url,
+                filename: file.name
+            };
+            
+            try {
+                // Try to extract title from <title> or first <h1>
+                const titleElement = doc.querySelector('title') || doc.querySelector('h1');
+                if (titleElement && titleElement.textContent.trim()) {
+                    postInfo.title = titleElement.textContent.trim();
+                }
+                
+                // Try to extract date from meta tags or specific elements
+                const dateElement = doc.querySelector('meta[name="date"], meta[property="article:published_time"], .date, .post-date');
+                if (dateElement) {
+                    if (dateElement.getAttribute('content')) {
+                        postInfo.date = dateElement.getAttribute('content');
+                    } else if (dateElement.textContent) {
+                        postInfo.date = dateElement.textContent.trim();
+                    }
+                }
+                
+                // Try to extract excerpt from meta description or first paragraph
+                const metaDesc = doc.querySelector('meta[name="description"]');
+                const firstPara = doc.querySelector('p');
+                
+                if (metaDesc && metaDesc.getAttribute('content')) {
+                    postInfo.excerpt = metaDesc.getAttribute('content');
+                } else if (firstPara && firstPara.textContent) {
+                    postInfo.excerpt = firstPara.textContent.trim().substring(0, 150) + '...';
+                }
+                
+                // Try to extract image from meta image or first image in content
+                const metaImage = doc.querySelector('meta[property="og:image"]');
+                const firstImage = doc.querySelector('img');
+                
+                if (metaImage && metaImage.getAttribute('content')) {
+                    postInfo.image = metaImage.getAttribute('content');
+                } else if (firstImage && firstImage.getAttribute('src')) {
+                    const imgSrc = firstImage.getAttribute('src');
+                    // Handle relative URLs
+                    if (imgSrc.startsWith('http')) {
+                        postInfo.image = imgSrc;
+                    } else {
+                        // We'll keep the placeholder for relative URLs to avoid CORS issues
+                    }
+                }
+            } catch (error) {
+                console.error('Error extracting post info:', error);
+            }
+            
+            return postInfo;
+        }
+        
+        // Function to extract an excerpt from HTML content (fallback)
+        function extractExcerptFromHTML(content) {
+            // Strip HTML tags for a plain text excerpt
+            const plainText = content
+                .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+                .replace(/<[^>]*>/g, ' ')
+                .replace(/\s+/g, ' ');
+                
+            // Get first 150 characters as excerpt
+            return plainText.trim().substring(0, 150) + '...';
+        }
+        
+        // Function to generate a placeholder image based on filename
+        function generateImagePlaceholder(filename) {
+            // Generate a consistent color based on the filename
+            const hash = Array.from(filename).reduce((hash, char) => {
+                return ((hash << 5) - hash) + char.charCodeAt(0);
+            }, 0);
+            
+            const hue = Math.abs(hash % 360);
+            const saturation = 70;
+            const lightness = 60;
+            
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+        
+        // Function to render posts to the grid
+        function renderPosts(posts) {
+            postsGrid.innerHTML = '';
+            
+            posts.forEach(post => {
+                const postCard = document.createElement('div');
+                postCard.className = 'post-card';
+                
+                // Create post image or placeholder
+                const postImage = document.createElement('div');
+                postImage.className = 'post-image';
+                if (post.image.startsWith('http')) {
+                    postImage.style.backgroundImage = `url(${post.image})`;
+                } else {
+                    postImage.style.backgroundColor = post.image;
+                }
+                
+                // Create post content container
+                const postContent = document.createElement('div');
+                postContent.className = 'post-content';
+                
+                // Create post date
+                const postDate = document.createElement('div');
+                postDate.className = 'post-date';
+                postDate.textContent = formatDate(post.date);
+                
+                // Create post title
+                const postTitle = document.createElement('h2');
+                postTitle.className = 'post-title';
+                postTitle.textContent = post.title;
+                
+                // Create post excerpt
+                const postExcerpt = document.createElement('div');
+                postExcerpt.className = 'post-excerpt';
+                postExcerpt.textContent = post.excerpt;
+                
+                // Create post link
+                const postLink = document.createElement('a');
+                postLink.className = 'post-link';
+                postLink.href = post.url;
+                postLink.target = '_blank';
+                postLink.textContent = 'Read Post';
+                
+                // Assemble the card
+                postContent.appendChild(postDate);
+                postContent.appendChild(postTitle);
+                postContent.appendChild(postExcerpt);
+                postContent.appendChild(postLink);
+                
+                postCard.appendChild(postImage);
+                postCard.appendChild(postContent);
+                
+                postsGrid.appendChild(postCard);
+            });
+        }
+        
+        // Function to format dates
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date)) return dateString;
+                
+                return new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }).format(date);
+            } catch (error) {
+                return dateString;
+            }
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', fetchRepositoryContents);
+    </script>
+</body>
+</html>
