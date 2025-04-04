@@ -233,29 +233,30 @@
     // GitHub API base URL
     const apiBaseUrl = 'https://api.github.com';
     
-    // Function to fetch repository contents and then traverse subdirectories
+    // Function to fetch repository contents and traverse subdirectories
     async function fetchRepositoryContents() {
       try {
-        // Fetch repository information
-        const repoResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}`);
-        const repoData = await repoResponse.json();
-        
-        if (repoResponse.status !== 200) {
-          throw new Error('Failed to fetch repository information');
+        // First, try fetching repository information
+        try {
+          const repoResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}`);
+          if (repoResponse.ok) {
+            const repoData = await repoResponse.json();
+            repoDescriptionEl.textContent = repoData.description || 'No description available';
+            repoLinkEl.href = repoData.html_url;
+            repoInfoEl.style.display = 'block';
+          } else {
+            console.warn('Failed to fetch repository info, status:', repoResponse.status);
+          }
+        } catch (repoError) {
+          console.warn('Error fetching repository info:', repoError);
         }
-        
-        // Update repository information
-        repoDescriptionEl.textContent = repoData.description || 'No description available';
-        repoLinkEl.href = repoData.html_url;
-        repoInfoEl.style.display = 'block';
         
         // Fetch the contents of the posts directory (e.g., posts/2025/)
         const contentsResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}/contents/${config.postsDirectory}`);
-        const contentsData = await contentsResponse.json();
-        
-        if (contentsResponse.status !== 200) {
+        if (!contentsResponse.ok) {
           throw new Error('Failed to fetch repository contents');
         }
+        const contentsData = await contentsResponse.json();
         
         // Array to hold files (posts)
         let postFiles = [];
@@ -267,6 +268,10 @@
           } else if (item.type === 'dir') {
             // Fetch contents of the subdirectory
             const dirResponse = await fetch(`${apiBaseUrl}/repos/${config.username}/${config.repo}/contents/${item.path}`);
+            if (!dirResponse.ok) {
+              console.warn(`Failed to fetch contents of directory: ${item.path}`);
+              continue;
+            }
             const dirContents = await dirResponse.json();
             // Look for an index.html file in the directory
             const indexFile = dirContents.find(file => file.type === 'file' && file.name.toLowerCase() === 'index.html');
@@ -284,7 +289,7 @@
         // Process each post file to extract metadata and content
         const postPromises = postFiles.map(async file => {
           if (file.name.endsWith('.html')) {
-            // For HTML posts, try to fetch and parse the HTML file
+            // For HTML posts, fetch and parse the HTML file
             const metadata = await tryFetchPostContent(file.download_url);
             return {
               title: metadata?.title || file.name,
@@ -372,7 +377,7 @@
                         doc.querySelector('h1')?.textContent ||
                         'Blog Post';
           
-          // For date, you might include a meta tag or other indicator; here we default.
+          // For date, try a meta tag; otherwise default.
           const date = doc.querySelector('meta[name="date"]')?.getAttribute('content') || 'Unknown date';
           
           // Extract excerpt: try meta description first, then first paragraph.
