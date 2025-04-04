@@ -1,1 +1,772 @@
+/* ====================================================
+   CSS for HarmonyPlan Blog Manager
+   
+   This stylesheet follows a modular approach, organizing styles 
+   by component and functionality, with variables for consistency.
+==================================================== */
 
+/* ------------------------------------------------------
+   CSS Custom Properties (Variables)
+   
+   Central location for theme colors and values to maintain
+   consistency and enable easy theme adjustments
+------------------------------------------------------ */
+:root {
+  /* Brand Colors */
+  --primary-color: #382240;      /* Brand primary - deep purple */
+  --secondary-color: #0066cc;    /* Brand secondary - bright blue */
+  --success-color: #4CAF50;      /* Success actions - green */
+  --warning-color: #ff9800;      /* Warning state - orange */
+  --error-color: #f44336;        /* Error state - red */
+  
+  /* Neutral Colors */
+  --bg-color: #f9f9f9;           /* Background - light grey */
+  --card-bg-color: #ffffff;      /* Card background - white */
+  --border-color: #ddd;          /* Border color - light grey */
+  --text-color: #333;            /* Main text - dark grey */
+  --text-color-light: #666;      /* Secondary text - medium grey */
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;         /* 4px - Tiny spacing */
+  --spacing-sm: 0.5rem;          /* 8px - Small spacing */
+  --spacing-md: 1rem;            /* 16px - Standard spacing */
+  --spacing-lg: 1.5rem;          /* 24px - Large spacing */
+  --spacing-xl: 2rem;            /* 32px - Extra large spacing */
+  
+  /* Border Radius */
+  --border-radius-sm: 4px;       /* Small radius */
+  --border-radius-md: 6px;       /* Medium radius */
+  --border-radius-lg: 8px;       /* Large radius */
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;  /* Fast transitions */
+  --transition-normal: 0.3s ease; /* Standard transitions */
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);      /* Subtle shadow */
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.15);     /* Medium shadow */
+  --shadow-lg: 0 0 10px rgba(0, 0, 0, 0.2);       /* Prominent shadow */
+}
+
+/* ------------------------------------------------------
+   CSS Reset and Global Base Styles
+   
+   Provides a consistent starting point by resetting 
+   browser defaults and setting base styles
+------------------------------------------------------ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+               "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--spacing-md) 0;
+  line-height: 1.3;
+}
+
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover, a:focus {
+  color: #0055aa;
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Form elements inherit font from parent */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* Highlight required fields with subtle styling */
+.required {
+  color: var(--error-color);
+}
+
+/* ------------------------------------------------------
+   Layout 
+   
+   Page structure and container styles
+------------------------------------------------------ */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: var(--card-bg-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+
+  /* Create space for footer */
+  flex: 1;
+}
+
+.main-content {
+  border-right: 1px solid var(--border-color);
+  padding-right: var(--spacing-lg);
+}
+
+.sidebar {
+  padding-left: var(--spacing-md);
+}
+
+/* Ensure footer stays at bottom */
+.site-footer {
+  margin-top: auto;
+}
+
+/* ------------------------------------------------------
+   Header
+   
+   Main site header with logo and connection status
+------------------------------------------------------ */
+.site-header {
+  background: var(--primary-color);
+  color: white;
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.connection-status {
+  font-size: 0.9rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Dynamic connection status styling using attribute selectors */
+.connection-status[data-status="connected"] {
+  color: #4CAF50;
+}
+
+.connection-status[data-status="connecting"] {
+  color: #ff9800;
+}
+
+.connection-status[data-status="disconnected"] {
+  color: #f44336;
+}
+
+/* ------------------------------------------------------
+   Tabs Navigation
+   
+   Styles for tab-based navigation in the main content area
+------------------------------------------------------ */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.tab {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  cursor: pointer;
+  background: #f1f1f1;
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  margin-right: var(--spacing-xs);
+  margin-bottom: 0; /* Ensure tabs stick to bottom border */
+  transition: all var(--transition-fast);
+  color: var(--text-color);
+  font-weight: normal;
+}
+
+/* Style for active tab */
+.tab.active {
+  background: #fff;
+  border-bottom: 2px solid var(--secondary-color);
+  font-weight: bold;
+  /* Prevent the active tab from moving by accounting for the 2px border */
+  margin-bottom: -2px;
+}
+
+/* Hover effect for inactive tabs */
+.tab:not(.active):hover {
+  background: #e9e9e9;
+}
+
+/* Tab content container */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ------------------------------------------------------
+   Forms
+   
+   Styling for form elements used throughout the application
+------------------------------------------------------ */
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="url"],
+textarea,
+select {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 1rem;
+  transition: border var(--transition-fast);
+}
+
+/* Focus state for form elements */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+/* Style form elements that have validation errors */
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+  border-color: var(--error-color);
+}
+
+/* Add a CSS-only validation message using :invalid and ::after */
+.form-group:has(input:invalid:not(:placeholder-shown))::after {
+  content: "This field is required";
+  color: var(--error-color);
+  font-size: 0.8rem;
+  display: block;
+  margin-top: var(--spacing-xs);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+small {
+  display: block;
+  color: var(--text-color-light);
+  font-size: 0.8rem;
+  margin-top: var(--spacing-xs);
+}
+
+.button-group {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+  justify-content: flex-end;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ------------------------------------------------------
+   Buttons
+   
+   Consistent button styling with variants for different actions
+------------------------------------------------------ */
+.button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+}
+
+.button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Button variants */
+.button.primary {
+  background: var(--secondary-color);
+  color: white;
+}
+
+.button.secondary {
+  background: #767676;
+  color: white;
+}
+
+.button.success {
+  background: var(--success-color);
+  color: white;
+}
+
+/* Disabled button state */
+.button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+/* ------------------------------------------------------
+   Status Messages
+   
+   Styles for success, error, and info messages
+------------------------------------------------------ */
+.messages-container {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.message {
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+  animation: slideDown 0.3s ease-out;
+}
+
+.message.error {
+  background: #ffebee;
+  color: var(--error-color);
+  border-left: 4px solid var(--error-color);
+}
+
+.message.success {
+  background: #e8f5e9;
+  color: var(--success-color);
+  border-left: 4px solid var(--success-color);
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ------------------------------------------------------
+   Preview & Code Containers
+   
+   Styles for preview and code output display areas
+------------------------------------------------------ */
+.preview-container,
+.code-container {
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-sm);
+  min-height: 300px;
+  max-height: 600px;
+  overflow: auto;
+  margin-bottom: var(--spacing-lg);
+  background: white;
+}
+
+/* Styling for the code output */
+pre.code-output {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: #f8f8f8;
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.9rem;
+}
+
+/* Preview content styling */
+.preview-container h2 {
+  margin-top: 0;
+  color: var(--primary-color);
+}
+
+.preview-container .blog-post-meta {
+  color: var(--text-color-light);
+  font-style: italic;
+  margin-bottom: var(--spacing-md);
+}
+
+/* ------------------------------------------------------
+   Sidebar Posts List
+   
+   Styling for the list of existing posts in the sidebar
+------------------------------------------------------ */
+.sidebar h3 {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.posts-list {
+  margin-bottom: var(--spacing-lg);
+}
+
+.year-selector {
+  margin-bottom: var(--spacing-md);
+}
+
+.month-list,
+.post-list {
+  list-style-type: none;
+}
+
+.month-item {
+  margin-bottom: var(--spacing-xs);
+  cursor: pointer;
+  padding: var(--spacing-xs) 0;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  user-select: none;
+}
+
+/* Add a dropdown indicator using ::before */
+.month-item::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: var(--spacing-sm);
+  font-size: 0.7rem;
+  transition: transform var(--transition-fast);
+}
+
+/* Rotate indicator when expanded */
+.month-item.expanded::before {
+  transform: rotate(90deg);
+}
+
+.month-item:hover {
+  color: var(--secondary-color);
+}
+
+.post-list {
+  /* Initially hide post lists */
+  display: none;
+  margin-left: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Show post list when parent month-item has 'expanded' class */
+.month-item.expanded + .post-list {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+.post-item {
+  padding: var(--spacing-xs) 0;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+}
+
+.post-item::before {
+  content: "•";
+  margin-right: var(--spacing-sm);
+  color: var(--secondary-color);
+}
+
+.post-item:hover {
+  color: var(--secondary-color);
+}
+
+/* ------------------------------------------------------
+   Modal for Images
+   
+   Styling for the image upload and selection modal
+------------------------------------------------------ */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  overflow: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: white;
+  margin: 5% auto;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--border-color);
+  width: 80%;
+  max-width: 800px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close {
+  cursor: pointer;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  line-height: 1;
+}
+
+/* Style for the upload section */
+.upload-section {
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Style for the image gallery */
+.gallery-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.image-item {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  transition: transform var(--transition-fast);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.image-item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.image-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.image-name {
+  padding: var(--spacing-xs);
+  font-size: 0.8rem;
+  text-align: center;
+  background: #f8f8f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Progress bar for uploads */
+.progress-bar {
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  margin-top: var(--spacing-sm);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--secondary-color);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* ------------------------------------------------------
+   Footer
+   
+   Styles for the site footer
+------------------------------------------------------ */
+.site-footer {
+  text-align: center;
+  padding: var(--spacing-md);
+  color: var(--text-color-light);
+  font-size: 0.9rem;
+}
+
+/* ------------------------------------------------------
+   Responsive Design
+   
+   Media queries for different device sizes
+------------------------------------------------------ */
+@media (max-width: 768px) {
+  /* Shift to single column layout */
+  .container {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-content {
+    border-right: none;
+    padding-right: 0;
+  }
+  
+  .sidebar {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-lg);
+    padding-left: 0;
+  }
+  
+  /* Make buttons more touch-friendly */
+  .button {
+    padding: var(--spacing-md);
+  }
+  
+  /* Adjust spacing for smaller screens */
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .form-actions .button-group {
+    margin-top: var(--spacing-md);
+  }
+}
+
+@media (max-width: 576px) {
+  /* Adjust tabs for very small screens */
+  .tabs {
+    flex-direction: column;
+    border-bottom: none;
+  }
+  
+  .tab {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .tab.active {
+    border-bottom: 1px solid var(--border-color);
+    border-left: 3px solid var(--secondary-color);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  /* Make modal fullscreen on mobile */
+  .modal-content {
+    width: 95%;
+    margin: 2% auto;
+  }
+  
+  /* Reduce padding to maximize content space */
+  .container,
+  .site-header {
+    padding: var(--spacing-md);
+  }
+}
+
+/* ------------------------------------------------------
+   Dark Mode Support
+   
+   Provides theme colors for dark mode preferences
+------------------------------------------------------ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #563363;       /* Lighter purple for dark mode */
+    --secondary-color: #4d9fff;     /* Brighter blue for dark mode */
+    --bg-color: #222;               /* Dark background */
+    --card-bg-color: #333;          /* Darker card background */
+    --border-color: #444;           /* Darker border */
+    --text-color: #eee;             /* Light text */
+    --text-color-light: #bbb;       /* Medium light text */
+  }
+  
+  body {
+    background: var(--bg-color);
+    color: var(--text-color);
+  }
+  
+  .tab {
+    background: #444;
+  }
+  
+  .tab.active {
+    background: var(--card-bg-color);
+  }
+  
+  pre.code-output {
+    background: #222;
+  }
+  
+  .message.error {
+    background: #3b1a1a;
+  }
+  
+  .message.success {
+    background: #1a3b1a;
+  }
+  
+  .image-name {
+    background: #444;
+  }
+}
